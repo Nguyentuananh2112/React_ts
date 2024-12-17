@@ -55,22 +55,6 @@ const Dashboard: React.FC = () => {
     setTasks(storedTasks);
   }, [navigate]);
 
-  // const handleSubmit = () => {
-  //   if (!name.trim() || !email.trim() || !password.trim()) {
-  //     alert("Vui lòng nhập đầy đủ thông tin!");
-  //     return;
-  //   }
-  //   if (!email.includes("@gmail.com")) {
-  //     alert("Email phải chứa '@gmail.com'!");
-  //     return;
-  //   }
-  //   const updatedUser = { name, email, password };
-  //   localStorage.setItem("currentUser", JSON.stringify(updatedUser));
-  //   setUserData(updatedUser);
-  //   alert("Thông tin đã được cập nhật thành công!");
-  // };
-
-
   const handleSubmit = () => {
     if (!name.trim() || !email.trim() || !password.trim()) {
       alert("Vui lòng nhập đầy đủ thông tin!");

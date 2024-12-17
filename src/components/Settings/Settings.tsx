@@ -39,6 +39,14 @@ const Setting: React.FC = () => {
     navigate("/dashboard"); // Điều hướng về trang Dashboard
   };
 
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "Enter") {
+        handleSubmit();
+      }
+    };
+
+
+
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow rounded-md">
       <h1 className="text-2xl font-bold mb-4">User Settings</h1>
@@ -68,6 +76,7 @@ const Setting: React.FC = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter new password"
+            onKeyDown={handleKeyPress}
           />
         </div>
 
