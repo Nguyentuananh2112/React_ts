@@ -19,11 +19,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/crud" element={<CRUD />} />
-       
-        
-
-        
+        <Route path="/crud" element={<CRUD />} />  
       </Routes>
     </Router>
     </>
