@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const Login: React.FC = () => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -32,7 +32,7 @@ const Login: React.FC = () => {
 
       // kiem tra mk
       if (parsedUser.password === password) {
-        // Lưu thông tin user hiện tại vào localStorage
+        // luu thong tin hien tai vao local
         localStorage.setItem("currentUser", JSON.stringify(parsedUser));
         alert("Đăng nhập thành công!");
         navigate("/dashboard"); // neu thanh cong thi den trang dashboard
