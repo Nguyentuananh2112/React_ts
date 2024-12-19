@@ -51,7 +51,7 @@ const Register = () => {
     <div className="flex justify-center items-center h-screen">
       <Card className="w-[350px] shadow-md">
         <CardHeader>
-          <CardTitle className="text-center text-lg">Register</CardTitle>
+          <CardTitle className="text-center text-lg">Đăng Ký Tài Khoản</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -108,14 +108,14 @@ const Register = () => {
             onClick={() => navigate("/login")}
             className="text-gray-600 hover:text-gray-800"
           >
-            Back to Login
+            Quay lại
           </Button>
           {/* Nút đăng ký */}
           <Button
             onClick={handleRegister}
             className="bg-green-500 hover:bg-green-600 text-white"
           >
-            Register
+            Tạo Tài Khoản
           </Button>
         </CardFooter>
       </Card>

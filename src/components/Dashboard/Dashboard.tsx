@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
+
+
 interface Task {
   id: number;
   title: string;
@@ -128,8 +130,11 @@ const Dashboard = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("currentUser");
-    navigate("/login");
+    const confirmLogout = window.confirm("Bạn có chắc muốn đăng xuất không?");
+    if (confirmLogout) {
+      localStorage.removeItem("currentUser");
+      navigate("/login");
+    }
   };
 
   return (
@@ -244,7 +249,7 @@ const Dashboard = () => {
               />
               <Button
                 onClick={editId ? handleUpdateTask : handleAddTask}
-                className="bg-blue-500 text-white hover:bg-blue-600 w-full"
+                className="bg-green-500 text-white hover:bg-green-600 w-full"
               >
                 {editId ? "Update Task" : "Add Task"}
               </Button>
