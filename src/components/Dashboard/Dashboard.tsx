@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   User,
   Settings,
-  BookOpen,
   Package,
   LayoutDashboard,
   LogOut,
@@ -14,13 +13,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
+
+
 interface Task {
   id: number;
   title: string;
   description: string;
 }
 
-const Dashboard: React.FC = () => {
+const Dashboard = () => {
   const [selectedPage, setSelectedPage] = useState<string>("Playground");
   const [tasks, setTasks] = useState<Task[]>([]);
   const [title, setTitle] = useState<string>("");
@@ -40,19 +41,29 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const currentUser = localStorage.getItem("currentUser");
-    if (currentUser) {
-      const parsedUser = JSON.parse(currentUser);
-      setUserData(parsedUser);
-      setName(parsedUser.name);
-      setEmail(parsedUser.email);
-      setPassword(parsedUser.password);
-    } else {
-      navigate("/login");
-    }
+    const initializeData = async () => {
+      try {
+        // Lấy thông tin người dùng từ localStorage
+        const currentUser = localStorage.getItem("currentUser");
+        if (currentUser) {
+          const parsedUser = JSON.parse(currentUser);
+          setUserData(parsedUser);
+          setName(parsedUser.name);
+          setEmail(parsedUser.email);
+          setPassword(parsedUser.password);
+        } else {
+          navigate("/login");
+        }
 
-    const storedTasks = JSON.parse(localStorage.getItem("crudTasks") || "[]");
-    setTasks(storedTasks);
+        // Lấy danh sách tasks từ localStorage
+        const storedTasks = JSON.parse(localStorage.getItem("crudTasks") || "[]");
+        setTasks(storedTasks);
+      } catch (error) {
+        console.error("Error initializing data:", error);
+      }
+    };
+
+    initializeData();
   }, [navigate]);
 
   const handleSubmit = () => {
@@ -64,28 +75,40 @@ const Dashboard: React.FC = () => {
       alert("Email phải chứa '@gmail.com'!");
       return;
     }
-  
-    // Xóa thông tin cũ dựa trên email trước đó
+
     localStorage.removeItem(userData?.email || "");
-  
-    // Lưu thông tin mới vào localStorage
     const updatedUser = { name, email, password };
     localStorage.setItem(email, JSON.stringify(updatedUser));
-  
-    // Cập nhật currentUser
     localStorage.setItem("currentUser", JSON.stringify(updatedUser));
-  
+
     setUserData(updatedUser);
     alert("Thông tin đã được cập nhật thành công!");
   };
-  
 
-  const handleAddOrUpdateTask = () => {
+  const handleAddTask = () => {
     if (!title.trim() || !description.trim()) {
       alert("Vui lòng nhập đầy đủ tiêu đề và mô tả!");
       return;
     }
 
+    const newTask = { id: Date.now(), title, description };
+    const updatedTasks = [...tasks, newTask];
+    setTasks(updatedTasks);
+    localStorage.setItem("crudTasks", JSON.stringify(updatedTasks));
+
+    setTitle("");
+    setDescription("");
+    alert("Task đã được thêm thành công và hiển thị ở To Do List!");
+  };
+
+  const handleEditTask = (task: Task) => {
+    setTitle(task.title);
+    setDescription(task.description);
+    setEditId(task.id);
+    setSelectedPage("CRUD");
+  };
+
+  const handleUpdateTask = () => {
     if (editId !== null) {
       const updatedTasks = tasks.map((task) =>
         task.id === editId ? { ...task, title, description } : task
@@ -93,32 +116,25 @@ const Dashboard: React.FC = () => {
       setTasks(updatedTasks);
       localStorage.setItem("crudTasks", JSON.stringify(updatedTasks));
       setEditId(null);
-    } else {
-      const newTask = { id: Date.now(), title, description };
-      const updatedTasks = [...tasks, newTask];
-      setTasks(updatedTasks);
-      localStorage.setItem("crudTasks", JSON.stringify(updatedTasks));
+      setTitle("");
+      setDescription("");
+      alert("Task đã được cập nhật thành công!");
     }
-
-    setTitle("");
-    setDescription("");
-  };
-
-  const handleEditTask = (task: Task) => {
-    setTitle(task.title);
-    setDescription(task.description);
-    setEditId(task.id);
   };
 
   const handleDeleteTask = (id: number) => {
     const updatedTasks = tasks.filter((task) => task.id !== id);
     setTasks(updatedTasks);
     localStorage.setItem("crudTasks", JSON.stringify(updatedTasks));
+    alert("Task đã được xóa!");
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("currentUser");
-    navigate("/login");
+    const confirmLogout = window.confirm("Bạn có chắc muốn đăng xuất không?");
+    if (confirmLogout) {
+      localStorage.removeItem("currentUser");
+      navigate("/login");
+    }
   };
 
   return (
@@ -126,10 +142,10 @@ const Dashboard: React.FC = () => {
       {/* Sidebar */}
       <aside className="w-64 bg-white border-r">
         <div className="p-4 border-b flex items-center space-x-2">
-          <div className="bg-black text-white p-2 rounded-md">Acme</div>
+          <div className="bg-black text-white p-2 rounded-md">Hello</div>
           <div>
-            <h2 className="font-bold text-sm">Acme Inc</h2>
-            <p className="text-xs text-gray-500">Enterprise</p>
+            <h2 className="font-bold text-sm">World</h2>
+            <p className="text-xs text-gray-500">2024</p>
           </div>
         </div>
         {/* Navigation */}
@@ -153,8 +169,7 @@ const Dashboard: React.FC = () => {
             }`}
           >
             <Package size={20} className="mr-2" />
-            CRUD
-            
+            Add Task
           </button>
 
           <button
@@ -185,33 +200,14 @@ const Dashboard: React.FC = () => {
 
       {/* Main Content */}
       <main className="flex-1 p-6">
-        {selectedPage === "CRUD" && (
+        {selectedPage === "Playground" && (
           <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow">
-            <h1 className="text-2xl font-bold mb-4 text-center">Task Management</h1>
-            <div className="space-y-4 mb-6">
-              <Input
-                placeholder="Task Title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-              <Textarea
-                placeholder="Task Description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-              <Button
-                onClick={handleAddOrUpdateTask}
-                className="bg-blue-500 text-white hover:bg-blue-600 w-full"
-              >
-                {editId ? "Update Task" : "Add Task"}
-              </Button>
-            </div>
-            {/* Task List */}
+            <h1 className="text-2xl font-bold mb-4 text-center">To Do List</h1>
             <div className="space-y-4">
               {tasks.map((task) => (
                 <div
                   key={task.id}
-                  className="p-4 bg-gray-100 rounded-lg flex justify-between items-center shadow"
+                  className="p-4 bg-gray-100 rounded-lg shadow flex justify-between items-center"
                 >
                   <div>
                     <h2 className="font-bold">{task.title}</h2>
@@ -233,6 +229,30 @@ const Dashboard: React.FC = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {selectedPage === "CRUD" && (
+          <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow">
+            <h1 className="text-2xl font-bold mb-4 text-center">Add New Task</h1>
+            <div className="space-y-4">
+              <Input
+                placeholder="Task Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+              <Textarea
+                placeholder="Task Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+              <Button
+                onClick={editId ? handleUpdateTask : handleAddTask}
+                className="bg-green-500 text-white hover:bg-green-600 w-full"
+              >
+                {editId ? "Update Task" : "Add Task"}
+              </Button>
             </div>
           </div>
         )}
@@ -259,9 +279,9 @@ const Dashboard: React.FC = () => {
               />
               <Button
                 onClick={handleSubmit}
-                className="bg-blue-500 text-white hover:bg-blue-600 w-full"
+                className="bg-green-500 text-white hover:bg-green-600 w-full"
               >
-                Submit
+                Update
               </Button>
             </div>
           </div>

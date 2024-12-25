@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const Register: React.FC = () => {
+const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,20 +20,20 @@ const Register: React.FC = () => {
   const navigate = useNavigate();
 
   const handleRegister = () => {
-    // Kiểm tra email
+    // kiem tra tai khoan
     if (!email.includes("@gmail.com")) {
       alert("Email phải chứa '@gmail.com' để đăng ký!");
       return;
     }
 
-    // Kiểm tra tài khoản đã tồn tại
+    // kiem tra tai khoan co ton tai k
     const existingUser = localStorage.getItem(email);
     if (existingUser) {
       alert("Tài khoản đã tồn tại!");
       return;
     }
 
-    // Lưu thông tin người dùng
+    // Luu thong tin user
     const newUser = { name, email, password };
     localStorage.setItem(email, JSON.stringify(newUser));
     alert("Đăng ký thành công!");
@@ -47,14 +47,11 @@ const Register: React.FC = () => {
       }
     };
 
-
-
-
   return (
     <div className="flex justify-center items-center h-screen">
       <Card className="w-[350px] shadow-md">
         <CardHeader>
-          <CardTitle className="text-center text-lg">Register</CardTitle>
+          <CardTitle className="text-center text-lg">Đăng Ký Tài Khoản</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -111,14 +108,14 @@ const Register: React.FC = () => {
             onClick={() => navigate("/login")}
             className="text-gray-600 hover:text-gray-800"
           >
-            Back to Login
+            Quay lại
           </Button>
           {/* Nút đăng ký */}
           <Button
             onClick={handleRegister}
             className="bg-green-500 hover:bg-green-600 text-white"
           >
-            Register
+            Tạo Tài Khoản
           </Button>
         </CardFooter>
       </Card>
